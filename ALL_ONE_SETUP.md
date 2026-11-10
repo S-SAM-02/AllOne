@@ -59,7 +59,7 @@ The app does not call OpenAI, Anthropic, xAI, or paid DeepSeek endpoints in this
 
 Commander, Researcher, Analyst, Builder, Creative Partner, Security Reviewer, Browser Planner, and Verifier are specialist roles coordinated through prompts. They share one local model by default. Complex prompts can receive a second local review pass. This saves RAM and avoids paying for eight concurrent model calls.
 
-Independent multi-provider comparison is not yet enabled. The current review pass uses the same local model; true comparison across different providers remains a follow-up feature.
+Compare 3 and Compare 4 are explicit actions. When cloud fallbacks are enabled, ALL ONE compares the local model with up to two or three configured cloud providers, then uses the local model to synthesize and review the results. If cloud mode is off, only the local answer is generated. The daily cloud-call cap still applies.
 
 ## Security and limitations
 
