@@ -1,0 +1,8 @@
+{
+  "name": "all-one-ai-workspace",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Local-first hybrid multi-agent AI workspace",
+  "scripts": { "start": "node server/server.js", "dev": "node server/server.js" },
+  "engines": { "node": ">=18.17" }
+}
