@@ -141,7 +141,7 @@ async function runChat(body) {
         ['Gemini', !!process.env.GEMINI_API_KEY, () => callGemini(messages, buildSystemPrompt())],
         ['Groq', !!process.env.GROQ_API_KEY, () => callGroq(messages, buildSystemPrompt())],
         ['OpenRouter', !!process.env.OPENROUTER_API_KEY && modelConfig().openrouter.endsWith(':free'), () => callOpenRouter(messages, buildSystemPrompt())]
-      ].filter(item => item[1] && !primary.provider.toLowerCase().includes(item[0].toLowerCase())).slice(0, 2);
+      ].filter(item => item[1] && !primary.provider.toLowerCase().includes(item[0].toLowerCase())).slice(0, body.compareCount === 4 ? 3 : 2);
       const results = await Promise.allSettled(candidates.map(item => item[2]()));
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
