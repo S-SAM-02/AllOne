@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e17">
+  <meta name="description" content="ALL ONE — one question, multiple minds, one ultimate answer.">
+  <title>ALL ONE — AI Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="ALL ONE home">
+        <span class="brand-mark">A<span>✳</span></span>
+        <span><strong>ALL ONE</strong><small>INTELLIGENCE, UNITED</small></span>
+      </a>
+      <button class="new-chat" id="newChat"><span>＋</span> New conversation <kbd>⌘ K</kbd></button>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-view="chat"><span>◈</span> Chat</button>
+        <button class="nav-item" data-view="compare"><span>▥</span> AI Compare <i class="nav-dot"></i></button>
+        <button class="nav-item" data-view="brain"><span>✧</span> Ultimate Brain</button>
+        <button class="nav-item" data-view="projects"><span>⌘</span> Projects & Coding</button>
+        <button class="nav-item" data-view="research"><span>⌕</span> Research</button>
+        <button class="nav-item" data-view="browser"><span>◎</span> Browser & Actions <span class="nav-count">0</span></button>
+      </nav>
+      <div class="nav-label lower-label">YOUR SPACE</div>
+      <nav class="nav-list" aria-label="Personal navigation">
+        <button class="nav-item" data-view="files"><span>▤</span> Files</button>
+        <button class="nav-item" data-view="history"><span>◷</span> History</button>
+        <button class="nav-item" data-view="integrations"><span>⛓</span> Integrations</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Settings & API Keys</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="status-card"><span class="status-indicator"></span><div><strong>Workspace ready</strong><small>Demo mode · integrations offline</small></div></div>
+        <div class="profile-row"><div class="avatar">S</div><div><strong>Your workspace</strong><small>Personal account</small></div><button class="more-btn" aria-label="More options">···</button></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div class="crumb"><span>Workspace</span><b>/</b><strong id="pageCrumb">Chat</strong></div>
+        <div class="top-actions"><span class="demo-pill"><i></i> DEMO MODE</span><button class="icon-btn" id="helpBtn" aria-label="Help">?</button><button class="upgrade-btn" data-view="integrations">Connect AI <span>↗</span></button></div>
+      </header>
+
+      <section class="view active-view" id="view-chat">
+        <div class="chat-wrap">
+          <div class="welcome-block">
+            <div class="eyebrow"><span class="sparkle">✳</span> YOUR UNIFIED INTELLIGENCE HUB</div>
+            <h1>One question.<br><span>Multiple minds.</span></h1>
+            <p>Ask once. Compare the world's best AI models.<br>Get one answer worth acting on.</p>
+          </div>
+          <div class="model-strip">
+            <span class="strip-label">YOUR AI TEAM</span>
+            <div class="model-chip"><span class="model-icon openai">✳</span> OpenAI <i></i></div>
+            <div class="model-chip"><span class="model-icon gemini">✦</span> Gemini <i></i></div>
+            <div class="model-chip"><span class="model-icon claude">✳</span> Claude <i></i></div>
+            <div class="model-chip"><span class="model-icon grok">𝕏</span> Grok <i></i></div>
+            <button class="manage-models" data-view="settings">+ Manage models</button>
+          </div>
+          <div class="composer-card">
+            <label class="sr-only" for="promptInput">Ask ALL ONE anything</label>
+            <textarea id="promptInput" rows="3" placeholder="What would you like to figure out, create, or get done?"></textarea>
+            <div class="composer-footer">
+              <div class="composer-tools">
+                <button class="tool-btn" id="attachBtn">＋ <span>Attach</span></button>
+                <input id="fileInput" type="file" hidden multiple>
+                <div class="mode-wrap"><span class="mode-label">MODE</span><select id="modeSelect" aria-label="AI mode"><option value="auto">✧ Auto — let ALL ONE decide</option><option value="compare3">Compare 3 models</option><option value="compare4">Compare 4 models</option><option value="single">Single model</option><option value="plan">Plan only — no execution</option></select></div>
+              </div>
+              <button class="send-btn" id="sendBtn">Ask ALL ONE <span>↑</span></button>
+            </div>
+          </div>
+          <div class="demo-notice"><span>ⓘ</span> You're exploring the interactive prototype. Connect a secure backend to run live models and actions.</div>
+          <div class="suggestions">
+            <div class="suggestion-card" data-prompt="Compare the best approaches to building a secure AI agent platform."><span class="suggestion-icon violet">✧</span><strong>Think deeply</strong><small>Compare ideas from multiple AI models</small><b>↗</b></div>
+            <div class="suggestion-card" data-prompt="Help me plan and build a modern full-stack website, step by step."><span class="suggestion-icon blue">⌘</span><strong>Build something</strong><small>Turn an idea into a working project</small><b>↗</b></div>
+            <div class="suggestion-card" data-prompt="Create a research plan and list the sources I should verify."><span class="suggestion-icon gold">⌕</span><strong>Research anything</strong><small>Explore a topic with structured analysis</small><b>↗</b></div>
+          </div>
+          <div id="conversation" class="conversation" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-compare">
+        <div class="page-heading"><div class="eyebrow">MULTI-MODEL INTELLIGENCE</div><h1>AI <span>Compare</span></h1><p>Run one prompt across multiple models, inspect differences, and choose what makes the strongest answer.</p></div>
+        <div class="compare-input panel"><textarea id="comparePrompt" rows="2" placeholder="Enter a question to compare across AI models..."></textarea><div class="panel-footer"><span class="muted">Choose 3 or 4 connected models</span><button class="primary-btn" id="compareBtn">Start comparison ↗</button></div></div>
+        <div class="compare-grid">
+          <article class="model-result panel"><div class="result-head"><span class="model-icon openai">✳</span><strong>OpenAI</strong><span class="offline-tag">Not connected</span></div><p>Model response will appear here when a provider is connected.</p><div class="result-foot">Reasoning · Accuracy · Clarity</div></article>
+          <article class="model-result panel"><div class="result-head"><span class="model-icon gemini">✦</span><strong>Gemini</strong><span class="offline-tag">Not connected</span></div><p>Model response will appear here when a provider is connected.</p><div class="result-foot">Coverage · Creativity · Clarity</div></article>
+          <article class="model-result panel"><div class="result-head"><span class="model-icon claude">✳</span><strong>Claude</strong><span class="offline-tag">Not connected</span></div><p>Model response will appear here when a provider is connected.</p><div class="result-foot">Nuance · Safety · Usefulness</div></article>
+          <article class="model-result panel"><div class="result-head"><span class="model-icon grok">𝕏</span><strong>Grok</strong><span class="offline-tag">Not connected</span></div><p>Model response will appear here when a provider is connected.</p><div class="result-foot">Freshness · Directness · Ideas</div></article>
+        </div>
+        <div class="panel synthesis-panel"><div><span class="eyebrow">THE FINAL WORD</span><h2>Ultimate synthesis</h2><p>Once live model responses are available, ALL ONE will evaluate evidence, conflicts, clarity, and usefulness before producing a combined answer.</p></div><span class="synthesis-icon">✧</span></div>
+      </section>
+
+      <section class="view" id="view-brain">
+        <div class="page-heading"><div class="eyebrow">ORCHESTRATION ENGINE</div><h1>Ultimate <span>Brain</span></h1><p>The command center that plans, delegates, evaluates, and verifies each task.</p></div>
+        <div class="brain-flow panel"><div class="flow-node"><span>01</span><strong>Understand</strong><small>Intent & context</small></div><b>→</b><div class="flow-node"><span>02</span><strong>Delegate</strong><small>Choose AI agents</small></div><b>→</b><div class="flow-node"><span>03</span><strong>Evaluate</strong><small>Check quality</small></div><b>→</b><div class="flow-node"><span>04</span><strong>Act safely</strong><small>Approval & verify</small></div></div>
+        <div class="two-col"><article class="panel"><div class="panel-title">Agent roster <span class="soft-tag">PLANNED</span></div><div class="agent-row"><span class="agent-icon">⌘</span><div><strong>Commander</strong><small>Intent classification & task routing</small></div><span class="agent-state">Designed</span></div><div class="agent-row"><span class="agent-icon">✧</span><div><strong>Research agent</strong><small>Evidence gathering & source checks</small></div><span class="agent-state">Designed</span></div><div class="agent-row"><span class="agent-icon">◈</span><div><strong>Model critic</strong><small>Contradiction and quality evaluation</small></div><span class="agent-state">Designed</span></div><div class="agent-row"><span class="agent-icon">◎</span><div><strong>Browser operator</strong><small>Permission-scoped browser actions</small></div><span class="agent-state">Designed</span></div></article><article class="panel"><div class="panel-title">Execution principles</div><ul class="principle-list"><li>Least-privilege permissions for every agent</li><li>Explicit approval for consequential actions</li><li>Independent verification before reporting success</li><li>Auditable task history and emergency stop</li><li>No bypassing account or website safeguards</li></ul></article></div>
+      </section>
+
+      <section class="view" id="view-projects"><div class="page-heading"><div class="eyebrow">CREATE & SHIP</div><h1>Projects & <span>Coding</span></h1><p>Organize code tasks, review changes, and coordinate development agents.</p></div><div class="empty-panel panel"><span class="empty-icon">⌘</span><h2>Your next build starts here</h2><p>Project workspaces, repository connections, code reviews, and deployment actions will appear here after integrations are configured.</p><button class="primary-btn" data-view="integrations">Connect GitHub ↗</button></div></section>
+
+      <section class="view" id="view-research"><div class="page-heading"><div class="eyebrow">DISCOVER WITH EVIDENCE</div><h1>Deep <span>Research</span></h1><p>Build structured research plans, collect sources, and distinguish facts from assumptions.</p></div><div class="panel research-panel"><h2>Start a research brief</h2><textarea id="researchPrompt" rows="4" placeholder="What topic should ALL ONE investigate?"></textarea><div class="panel-footer"><span class="muted">Source verification is required for live research</span><button class="primary-btn" id="researchBtn">Create research plan ↗</button></div></div><div class="two-col"><div class="panel"><div class="panel-title">Research workflow</div><ol class="principle-list"><li>Define the question and scope</li><li>Find primary and independent sources</li><li>Cross-check key claims</li><li>Summarize with citations and uncertainty</li></ol></div><div class="panel"><div class="panel-title">Source library</div><p class="muted">No sources saved yet. Research results will be shown here when the research backend is connected.</p></div></div></section>
+
+      <section class="view" id="view-browser">
+        <div class="page-heading"><div class="eyebrow">YOUR APPROVAL-FIRST OPERATOR</div><h1>Browser & <span>Actions</span></h1><p>Give ALL ONE a task. Review its plan, grant scoped access, and approve each consequential action.</p></div>
+        <div class="browser-warning"><span>⚠</span><div><strong>Browser automation is not connected</strong><small>This page is a control-surface prototype. It cannot access your browser, accounts, or websites yet.</small></div></div>
+        <div class="panel task-panel"><div class="panel-title">What should ALL ONE do?</div><textarea id="browserTask" rows="3" placeholder="Example: Open my project website, check the broken links, and prepare a fix for my approval."></textarea><div class="task-options"><label><input type="checkbox" checked disabled> Prepare a plan first</label><label><input type="checkbox" checked disabled> Ask before external changes</label><label><input type="checkbox" checked disabled> Verify completion</label><button class="primary-btn" id="planTaskBtn">Prepare task plan ↗</button></div></div>
+        <div class="two-col"><div class="panel"><div class="panel-title">Browser connections <span class="offline-tag">OFFLINE</span></div><div class="connection-row"><span class="connection-icon">☁</span><div><strong>Cloud browser</strong><small>Isolated remote browser session</small></div><button class="outline-btn" disabled>Setup required</button></div><div class="connection-row"><span class="connection-icon">▣</span><div><strong>Local browser</strong><small>Your own browser via a secure companion</small></div><button class="outline-btn" disabled>Setup required</button></div></div><div class="panel"><div class="panel-title">Permission controls</div><div class="permission-line"><div><strong>Allowed websites</strong><small>Per-domain allowlist</small></div><span class="soft-tag">Not configured</span></div><div class="permission-line"><div><strong>Approval required</strong><small>Submit, send, purchase, publish, delete</small></div><span class="green-tag">Always on</span></div><div class="permission-line"><div><strong>Emergency stop</strong><small>Server-enforced kill switch</small></div><span class="soft-tag">Backend needed</span></div></div></div>
+        <div class="panel approvals-panel"><div class="panel-title">Approval queue <span class="soft-tag" id="approvalCount">0 pending</span></div><div id="approvalQueue" class="queue-empty">No actions waiting for approval.</div></div>
+      </section>
+
+      <section class="view" id="view-files"><div class="page-heading"><div class="eyebrow">YOUR KNOWLEDGE SPACE</div><h1>My <span>Files</span></h1><p>Keep documents and project context organized for your AI workspace.</p></div><div class="empty-panel panel"><span class="empty-icon">▤</span><h2>No files added yet</h2><p>File uploads and secure document processing will be enabled with the backend storage service.</p><button class="primary-btn" id="filesUploadBtn">Choose local files</button><input type="file" id="filesInput" multiple hidden></div></section>
+      <section class="view" id="view-history"><div class="page-heading"><div class="eyebrow">YOUR ACTIVITY</div><h1>Task <span>History</span></h1><p>Review what was asked, planned, approved, executed, and verified.</p></div><div class="panel history-panel" id="historyList"><div class="queue-empty">No tasks yet. Your demo interactions will appear here.</div></div></section>
+      <section class="view" id="view-integrations"><div class="page-heading"><div class="eyebrow">CONNECT YOUR WORKSPACE</div><h1>Connected <span>Apps</span></h1><p>Bring your AI providers and tools together. Each connection will have its own permissions.</p></div><div class="integration-grid">
+        <article class="integration-card panel"><span class="model-icon openai">✳</span><strong>OpenAI</strong><small>Models & reasoning</small><span class="offline-tag">Not connected</span><button data-view="settings" class="outline-btn">Configure</button></article>
+        <article class="integration-card panel"><span class="model-icon gemini">✦</span><strong>Google Gemini</strong><small>Multimodal AI</small><span class="offline-tag">Not connected</span><button data-view="settings" class="outline-btn">Configure</button></article>
+        <article class="integration-card panel"><span class="model-icon claude">✳</span><strong>Anthropic Claude</strong><small>Writing & analysis</small><span class="offline-tag">Not connected</span><button data-view="settings" class="outline-btn">Configure</button></article>
+        <article class="integration-card panel"><span class="model-icon grok">𝕏</span><strong>xAI Grok</strong><small>General intelligence</small><span class="offline-tag">Not connected</span><button data-view="settings" class="outline-btn">Configure</button></article>
+        <article class="integration-card panel"><span class="model-icon deepseek">◉</span><strong>DeepSeek</strong><small>Reasoning & coding</small><span class="offline-tag">Not connected</span><button data-view="settings" class="outline-btn">Configure</button></article>
+        <article class="integration-card panel"><span class="model-icon router">↗</span><strong>OpenRouter</strong><small>Multiple model gateway</small><span class="offline-tag">Not connected</span><button data-view="settings" class="outline-btn">Configure</button></article>
+        <article class="integration-card panel"><span class="model-icon github">⌘</span><strong>GitHub</strong><small>Repositories & code</small><span class="offline-tag">Not connected</span><button class="outline-btn" disabled>OAuth setup needed</button></article>
+        <article class="integration-card panel"><span class="model-icon browser">◎</span><strong>Browser operator</strong><small>Cloud or local browser</small><span class="offline-tag">Not connected</span><button data-view="browser" class="outline-btn">Configure</button></article>
+      </div></section>
+
+      <section class="view" id="view-settings"><div class="page-heading"><div class="eyebrow">MAKE IT YOURS</div><h1>Settings & <span>API Keys</span></h1><p>Choose your providers and preferred models. Keys must be saved by a secure backend—not this browser.</p></div><div class="security-note"><span>🔒</span><div><strong>Your secrets stay private</strong><small>This prototype never transmits or stores the key field below. Secure save becomes available only after a server-side encrypted vault and account authentication are installed.</small></div></div><div class="panel settings-panel"><div class="panel-title">AI provider connections <span class="offline-tag">BACKEND REQUIRED</span></div><div class="provider-row"><div class="provider-title"><span class="model-icon openai">✳</span><div><strong>OpenAI</strong><small>OpenAI API</small></div></div><label>Model<input value="Configure on backend" disabled></label><label>API key<input type="password" placeholder="Not accepted in demo" disabled></label><span class="offline-tag">Offline</span></div><div class="provider-row"><div class="provider-title"><span class="model-icon gemini">✦</span><div><strong>Gemini</strong><small>Google AI Studio</small></div></div><label>Model<input value="Configure on backend" disabled></label><label>API key<input type="password" placeholder="Not accepted in demo" disabled></label><span class="offline-tag">Offline</span></div><div class="provider-row"><div class="provider-title"><span class="model-icon claude">✳</span><div><strong>Claude</strong><small>Anthropic API</small></div></div><label>Model<input value="Configure on backend" disabled></label><label>API key<input type="password" placeholder="Not accepted in demo" disabled></label><span class="offline-tag">Offline</span></div><div class="provider-row"><div class="provider-title"><span class="model-icon grok">𝕏</span><div><strong>Grok</strong><small>xAI API</small></div></div><label>Model<input value="Configure on backend" disabled></label><label>API key<input type="password" placeholder="Not accepted in demo" disabled></label><span class="offline-tag">Offline</span></div><div class="provider-row"><div class="provider-title"><span class="model-icon deepseek">◉</span><div><strong>DeepSeek</strong><small>DeepSeek API</small></div></div><label>Model<input value="Configure on backend" disabled></label><label>API key<input type="password" placeholder="Not accepted in demo" disabled></label><span class="offline-tag">Offline</span></div><div class="provider-row"><div class="provider-title"><span class="model-icon router">↗</span><div><strong>OpenRouter</strong><small>OpenRouter API</small></div></div><label>Model<input value="Configure on backend" disabled></label><label>API key<input type="password" placeholder="Not accepted in demo" disabled></label><span class="offline-tag">Offline</span></div></div><div class="panel settings-panel"><div class="panel-title">Autonomy & safety</div><div class="permission-line"><div><strong>Execution mode</strong><small>Approval-first autonomy</small></div><span class="green-tag">Selected</span></div><div class="permission-line"><div><strong>Ask before external actions</strong><small>Sending, submitting, spending, publishing, deleting</small></div><span class="green-tag">Required</span></div><div class="permission-line"><div><strong>Audit log</strong><small>Record plans, approvals, actions, and verification</small></div><span class="soft-tag">Backend needed</span></div></div></section>
+
+      <footer class="app-footer"><span>ALL ONE <b>·</b> Built for clarity, control, and capability.</span><span>Prototype build 0.1 <b>·</b> Demo mode</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
