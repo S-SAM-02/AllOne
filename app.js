@@ -134,7 +134,7 @@
     try {
       const response = await fetch('/api/chat', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({prompt,mode: mode === 'compare3' || mode === 'compare4' ? 'compare' : 'auto'})
+        body:JSON.stringify({prompt,mode: mode === 'compare3' || mode === 'compare4' ? 'compare' : 'auto',compareCount: mode === 'compare4' ? 4 : 3})
       });
       const data = await response.json();
       pending.remove();
