@@ -153,15 +153,24 @@ async function runChat(body) {
     }
   }
 
+  let synthesisText = '';
+  if (comparisons.length && primary.provider.startsWith('Ollama')) {
+    try {
+      const evidence = [{ provider: primary.provider, model: primary.model, answer: primary.text }, ...comparisons.map(item => ({ provider: item.provider, model: item.model, answer: item.text }))];
+      const synthesisPrompt = 'Synthesize these model responses into one accurate, practical answer. Resolve disagreements by reasoning, do not blindly vote, flag uncertainty, and do not invent facts.\n\nQUESTION:\n' + prompt + '\n\nMODEL RESPONSES:\n' + JSON.stringify(evidence);
+      const synthesis = await callOllama([{ role: 'user', content: synthesisPrompt }], 'You are the ALL ONE synthesis engine. Compare evidence and produce the strongest supported answer.');
+      synthesisText = synthesis.text || '';
+    } catch { /* Side-by-side responses remain available if synthesis fails. */ }
+  }
   let reviewText = '';
   if (shouldCritique(prompt, mode) && primary.provider.startsWith('Ollama')) {
     try {
-      const review = await callOllama([{ role: 'user', content: 'Review this answer for errors and missing caveats. Return only important corrections.\n\nQUESTION:\n' + prompt + '\n\nDRAFT:\n' + primary.text }], buildSystemPrompt({ critic: true }));
+      const review = await callOllama([{ role: 'user', content: 'Review this answer for errors and missing caveats. Return only important corrections.\n\nQUESTION:\n' + prompt + '\n\nDRAFT:\n' + (synthesisText || primary.text) }], buildSystemPrompt({ critic: true }));
       reviewText = review.text || '';
     } catch { /* Keep the primary response if the local review pass fails. */ }
   }
-  const comparisonText = comparisons.map((item, i) => '\n\n---\n' + item.provider + ' · ' + item.model + '\n' + item.text).join('');
-  const answer = primary.text + comparisonText + (reviewText ? '\n\n---\nALL ONE local verification notes\n' + reviewText : '') + '\n\n---\n' + compareNote;
+  const comparisonText = comparisons.map(item => '\n\n---\n' + item.provider + ' · ' + item.model + '\n' + item.text).join('');
+  const answer = (synthesisText ? 'ALL ONE ULTIMATE SYNTHESIS\n' + synthesisText : primary.text) + comparisonText + (reviewText ? '\n\n---\nALL ONE local verification notes\n' + reviewText : '') + '\n\n---\n' + compareNote;
   return {
     answer, provider: primary.provider, model: primary.model,
     agents: AGENTS.map(a => ({ id: a.id, name: a.name, status: 'role-coordinated' })),
