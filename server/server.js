@@ -183,6 +183,9 @@ function mime(file) {
 }
 function serveStatic(pathname, res) {
   const requested = pathname === '/' ? '/index.html' : decodeURIComponent(pathname);
+  // Never expose server-side source, dotfiles, or local environment secrets.
+  const segments = requested.split('/').filter(Boolean);
+  if (segments.some(segment => segment.startsWith('.') || segment.toLowerCase() === 'server')) return send(res, 404, { error: 'Not found' });
   const file = path.resolve(ROOT, '.' + requested);
   if (!file.startsWith(ROOT + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) return send(res, 404, { error: 'Not found' });
   res.writeHead(200, { 'Content-Type': mime(file), 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'no-store' });
