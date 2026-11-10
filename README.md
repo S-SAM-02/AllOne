@@ -13,7 +13,7 @@ ALL ONE is a local-first hybrid AI workspace. It coordinates eight specialist ag
 - Loopback-only server binding (127.0.0.1).
 - Approval-first design. Browser agent is plan-only; no website actions are executed.
 
-The eight agents are specialist roles sharing a model by default, not eight separately billed model subscriptions. Complex prompts can receive a second local review pass. Independent model comparison is not yet enabled in the backend.
+The eight agents are specialist roles sharing a model by default, not eight separately billed model subscriptions. Complex prompts can receive a second local review pass. Compare 3/Compare 4 explicitly requests up to two or three optional cloud models, then uses Ollama for synthesis and review. It runs only when cloud mode is enabled and within the daily cap.
 
 ## Run locally
 
