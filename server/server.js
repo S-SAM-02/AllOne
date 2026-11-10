@@ -41,7 +41,7 @@ function send(res, status, payload) {
 }
 function allowedOrigin(origin) {
   if (!origin) return true;
-  try { return ['localhost', '127.0.0.1'].includes(new URL(origin).hostname); } catch { return false; }
+  try { const u = new URL(origin); return u.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(u.hostname) && u.port === String(PORT); } catch { return false; }
 }
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -83,8 +83,8 @@ async function callGemini(messages, system) {
   reserveCloudCall();
   const model = modelConfig().gemini;
   const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY);
-  const data = await fetchJson(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents, generationConfig: { maxOutputTokens: 1200, temperature: 0.4 } }) });
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent';
+  const data = await fetchJson(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY }, body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents, generationConfig: { maxOutputTokens: 1200, temperature: 0.4 } }) });
   return { provider: 'Gemini (cloud)', model, text: data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '' };
 }
 async function callCompatible(name, baseUrl, key, model, messages, system) {
@@ -125,8 +125,34 @@ async function runChat(body) {
   const prompt = String(body.prompt || '').trim();
   if (!prompt || prompt.length > 12000) throw Object.assign(new Error('Enter a prompt of 1–12,000 characters.'), { status: 400 });
   const mode = body.mode === 'compare' ? 'compare' : 'auto';
-  const primary = await localFirst([{ role: 'user', content: prompt }], buildSystemPrompt());
+  const messages = [{ role: 'user', content: prompt }];
+  const primary = await localFirst(messages, buildSystemPrompt());
   if (!primary.text) throw new Error('The selected model returned an empty response.');
+
+  // Independent model comparison is selective and user-triggered. It is never
+  // launched in Auto mode, and it requires cloud fallbacks to be explicitly enabled.
+  const comparisons = [];
+  let compareNote = 'Auto mode: one primary model used; no extra model calls.';
+  if (mode === 'compare') {
+    if (!cloudAllowed()) {
+      compareNote = 'Comparison requested, but cloud fallbacks are disabled or capped. Only the primary response was generated.';
+    } else {
+      const candidates = [
+        ['Gemini', !!process.env.GEMINI_API_KEY, () => callGemini(messages, buildSystemPrompt())],
+        ['Groq', !!process.env.GROQ_API_KEY, () => callGroq(messages, buildSystemPrompt())],
+        ['OpenRouter', !!process.env.OPENROUTER_API_KEY && modelConfig().openrouter.endsWith(':free'), () => callOpenRouter(messages, buildSystemPrompt())]
+      ].filter(item => item[1] && !primary.provider.toLowerCase().includes(item[0].toLowerCase())).slice(0, 2);
+      const results = await Promise.allSettled(candidates.map(item => item[2]()));
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        if (result.status === 'fulfilled' && result.value.text) comparisons.push(result.value);
+      }
+      compareNote = comparisons.length
+        ? 'Selective comparison completed with ' + comparisons.length + ' additional free-tier provider(s).'
+        : 'No additional free-tier provider was available; only the primary response was generated.';
+    }
+  }
+
   let reviewText = '';
   if (shouldCritique(prompt, mode) && primary.provider.startsWith('Ollama')) {
     try {
@@ -134,12 +160,12 @@ async function runChat(body) {
       reviewText = review.text || '';
     } catch { /* Keep the primary response if the local review pass fails. */ }
   }
+  const comparisonText = comparisons.map((item, i) => '\n\n---\n' + item.provider + ' · ' + item.model + '\n' + item.text).join('');
+  const answer = primary.text + comparisonText + (reviewText ? '\n\n---\nALL ONE local verification notes\n' + reviewText : '') + '\n\n---\n' + compareNote;
   return {
-    answer: primary.text + (reviewText ? '\n\n---\nALL ONE verification notes\n' + reviewText : ''),
-    provider: primary.provider, model: primary.model,
+    answer, provider: primary.provider, model: primary.model,
     agents: AGENTS.map(a => ({ id: a.id, name: a.name, status: 'role-coordinated' })),
-    reviewRun: Boolean(reviewText),
-    comparison: 'Selective comparison is not yet an independent multi-provider feature; the current optional review uses the same local model.',
+    reviewRun: Boolean(reviewText), comparison: compareNote, comparedModels: comparisons.map(item => ({ provider: item.provider, model: item.model })),
     cloud: { enabled: process.env.ENABLE_CLOUD_FALLBACKS === 'true', callsToday: cloudCalls, dailyCap: CLOUD_DAILY_LIMIT }
   };
 }
