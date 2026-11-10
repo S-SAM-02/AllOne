@@ -1,42 +1,37 @@
-# ALL ONE — Add your AI API keys safely
+# ALL ONE — Safe provider configuration
 
-## Never commit real API keys to GitHub
+## Local inference requires no API key
 
-Do not paste keys into server/providers.js, server/.env.example, index.html, app.js, issues, or pull requests. A public repository can expose committed keys. If a key is accidentally committed, revoke it at the provider dashboard and create a replacement.
+Ollama is the default runtime. Install Ollama and pull the small starter model:
 
-## Local development
+```powershell
+ollama pull llama3.2:1b
+npm start
+```
 
-1. Clone the repository.
-2. Copy server/.env.example to server/.env on your computer.
-3. Put your own keys only in server/.env.
-4. Keep that real .env file private. The root .gitignore excludes .env files.
-5. Restart your backend after changing environment variables.
+The website and API run locally at http://127.0.0.1:8787. No cloud key is required.
 
-| Provider | API key variable | Optional model variable |
-|---|---|---|
-| OpenAI | OPENAI_API_KEY | OPENAI_MODEL |
-| Gemini | GEMINI_API_KEY | GEMINI_MODEL |
-| Claude | ANTHROPIC_API_KEY | ANTHROPIC_MODEL |
-| Grok | XAI_API_KEY | XAI_MODEL |
-| DeepSeek | DEEPSEEK_API_KEY | DEEPSEEK_MODEL |
-| OpenRouter | OPENROUTER_API_KEY | OPENROUTER_MODEL |
+## Optional cloud fallback
 
-## Vercel deployment
+Cloud providers are optional and disabled by default. If you choose to enable them, copy server/.env.example to server/.env and add only the keys you need:
 
-After the backend is implemented and deployed:
+- GEMINI_API_KEY
+- GROQ_API_KEY
+- OPENROUTER_API_KEY (only used with a model ID ending in :free)
 
-1. Open your ALL ONE project in Vercel.
-2. Open Settings → Environment Variables.
-3. Add each variable name and its value separately.
-4. Select the environments you use: Production, Preview, and/or Development.
-5. Save and redeploy so the server receives the new values.
+Then set ENABLE_CLOUD_FALLBACKS=true and keep CLOUD_MAX_CALLS_PER_DAY low. Restart ALL ONE after changing the file.
 
-Do not use NEXT_PUBLIC_, VITE_, or other public/client-side variable prefixes for API keys.
+Free-tier quotas and provider billing rules can change. A free-tier key is not a universal guarantee of zero charges if you have enabled billing on that provider account. For the strongest no-charge setup, leave cloud fallbacks disabled and use Ollama locally.
 
-## Current implementation status
+## Secret handling
 
-- server/.env.example: safe blank template committed to GitHub.
-- server/providers.js: server-only configuration helper that reads environment variables and reports connection status without exposing secrets.
-- Live provider request adapters, authenticated routes, encrypted per-user vault, and Settings-page connection tests still need to be implemented. The current static prototype does not send API requests yet.
+- Never commit server/.env.
+- Never put API keys in index.html, app.js, browser storage, screenshots, issues, or chat.
+- The API status endpoint reports only whether a key is configured; it never returns its value.
+- If a key is exposed, revoke it in the provider dashboard and create a replacement.
 
-Never share your API key with anyone. Use separate keys for applications and configure provider spending limits where available.
+## Supported by this free-first runtime
+
+Ollama is primary. Gemini, Groq, and OpenRouter :free are optional. Paid OpenAI, Anthropic, xAI, and DeepSeek API calls are not wired into this runtime.
+
+See [ALL_ONE_SETUP.md](ALL_ONE_SETUP.md) for full installation and security limitations.
